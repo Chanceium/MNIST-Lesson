@@ -1,0 +1,76 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+.eggs/
+*.egg-info/
+.installed.cfg
+lib/ 
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IPython history
+ipython_history.sqlite
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Colab files
+.colab/
+
+*.h5
+*.keras
+*.ckpt
+checkpoint
+
+# TensorFlow.js exported folders
+tfjs_*/
+
+# Data augmentation / temporary data
+tmp/
+*.npz
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Ignore local environment / secret config
+.env
+env.local
+secrets.json
+
+# Add any other local/OS-specific ignores below
