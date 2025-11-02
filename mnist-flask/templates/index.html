@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MNIST Digit Recognizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.02);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            background: #f5f5f7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: #1d1d1f;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 680px;
+            width: 100%;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        h1 {
+            font-size: clamp(32px, 6vw, 48px);
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 12px;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 19px;
+            color: #6e6e73;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            margin-bottom: 8px;
+        }
+
+        .creator {
+            font-size: 17px;
+            color: #86868b;
+            font-weight: 400;
+            letter-spacing: -0.2px;
+        }
+
+        .info-section {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 20px 48px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+
+        .info-section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 24px;
+            letter-spacing: -0.8px;
+        }
+
+        .model-info {
+            margin-bottom: 28px;
+            padding: 24px;
+            border-radius: 20px;
+            border-left: 4px solid;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .model-info:hover {
+            transform: translateX(4px);
+        }
+
+        .model-info.baseline-info {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+            border-color: #007aff;
+        }
+
+        .model-info.augmented-info {
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+            border-color: #34c759;
+        }
+
+        .model-info.overfitted-info {
+            background: linear-gradient(135deg, #ffffff 0%, #fff8f0 100%);
+            border-color: #ff9500;
+        }
+
+        .model-info h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .baseline-info h3 {
+            color: #007aff;
+        }
+
+        .augmented-info h3 {
+            color: #34c759;
+        }
+
+        .overfitted-info h3 {
+            color: #ff9500;
+        }
+
+        .model-info p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1d1d1f;
+            margin: 0;
+        }
+
+        .toggle-info {
+            background: none;
+            border: 2px solid #0071e3;
+            color: #0071e3;
+            padding: 12px 24px;
+            border-radius: 980px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: inherit;
+            letter-spacing: -0.2px;
+            display: block;
+            width: 100%;
+        }
+
+        .toggle-info:hover {
+            background: #0071e3;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 113, 227, 0.3);
+        }
+
+        .toggle-info:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .info-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .info-content.show {
+            max-height: 1000px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 20px 48px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 28px 60px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .canvas-container {
+            position: relative;
+            margin-bottom: 28px;
+        }
+
+        .canvas-label {
+            font-size: 17px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+            display: block;
+            letter-spacing: -0.3px;
+        }
+
+        #canvas {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1;
+            border: 2px solid #d2d2d7;
+            border-radius: 20px;
+            cursor: crosshair;
+            background: #000000;
+            display: block;
+            margin: 0 auto;
+            touch-action: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        #canvas:active {
+            transform: scale(0.995);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .controls {
+            display: flex;
+            gap: 16px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 980px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: inherit;
+            letter-spacing: -0.2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-clear {
+            background: #0071e3;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
+        }
+
+        .btn-clear:hover {
+            background: #0077ed;
+            box-shadow: 0 4px 16px rgba(0, 113, 227, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-clear:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3);
+        }
+
+        .status {
+            text-align: center;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 20px;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: -0.2px;
+        }
+
+        .status.show {
+            opacity: 1;
+        }
+
+        .status.analyzing {
+            background: rgba(0, 113, 227, 0.08);
+            color: #0071e3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .predictions {
+            margin-top: 24px;
+        }
+
+        .model-result {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 20px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+            border: 2px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .model-result::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .model-result:hover::before {
+            left: 100%;
+        }
+
+        .model-result.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .model-result.baseline {
+            border-color: #007aff;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+            box-shadow: 0 8px 32px rgba(0, 122, 255, 0.15), 0 2px 8px rgba(0, 122, 255, 0.1);
+        }
+
+        .model-result.baseline:hover {
+            box-shadow: 0 12px 48px rgba(0, 122, 255, 0.25), 0 4px 12px rgba(0, 122, 255, 0.15);
+            transform: translateY(-4px) scale(1.01);
+        }
+
+        .model-result.augmented {
+            border-color: #34c759;
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+            box-shadow: 0 8px 32px rgba(52, 199, 89, 0.15), 0 2px 8px rgba(52, 199, 89, 0.1);
+        }
+
+        .model-result.augmented:hover {
+            box-shadow: 0 12px 48px rgba(52, 199, 89, 0.25), 0 4px 12px rgba(52, 199, 89, 0.15);
+            transform: translateY(-4px) scale(1.01);
+        }
+
+        .model-result.overfitted {
+            border-color: #ff9500;
+            background: linear-gradient(135deg, #ffffff 0%, #fff8f0 100%);
+            box-shadow: 0 8px 32px rgba(255, 149, 0, 0.15), 0 2px 8px rgba(255, 149, 0, 0.1);
+        }
+
+        .model-result.overfitted:hover {
+            box-shadow: 0 12px 48px rgba(255, 149, 0, 0.25), 0 4px 12px rgba(255, 149, 0, 0.15);
+            transform: translateY(-4px) scale(1.01);
+        }
+
+        .model-name {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 20px;
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 8px;
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .baseline .model-name {
+            background: rgba(0, 122, 255, 0.12);
+            color: #007aff;
+        }
+
+        .augmented .model-name {
+            background: rgba(52, 199, 89, 0.12);
+            color: #34c759;
+        }
+
+        .overfitted .model-name {
+            background: rgba(255, 149, 0, 0.12);
+            color: #ff9500;
+        }
+
+        .prediction-main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .digit {
+            font-size: 72px;
+            font-weight: 800;
+            color: #1d1d1f;
+            letter-spacing: -2px;
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .confidence {
+            text-align: right;
+        }
+
+        .confidence-value {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .baseline .confidence-value {
+            color: #007aff;
+        }
+
+        .augmented .confidence-value {
+            color: #34c759;
+        }
+
+        .overfitted .confidence-value {
+            color: #ff9500;
+        }
+
+        .confidence-label {
+            font-size: 13px;
+            color: #86868b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 4px;
+        }
+
+        .probability-bars {
+            margin-top: 16px;
+        }
+
+        .prob-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .prob-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1d1d1f;
+            min-width: 24px;
+        }
+
+        .prob-bar-container {
+            flex: 1;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+        }
+
+        .prob-bar {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+            width: 0;
+            position: relative;
+        }
+
+        .baseline .prob-bar {
+            background: linear-gradient(90deg, #007aff, #5ac8fa);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+        }
+
+        .augmented .prob-bar {
+            background: linear-gradient(90deg, #34c759, #30d158);
+            box-shadow: 0 2px 8px rgba(52, 199, 89, 0.3);
+        }
+
+        .overfitted .prob-bar {
+            background: linear-gradient(90deg, #ff9500, #ffb340);
+            box-shadow: 0 2px 8px rgba(255, 149, 0, 0.3);
+        }
+
+        .prob-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1d1d1f;
+            min-width: 55px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 16px;
+            }
+
+            .card {
+                padding: 28px;
+                border-radius: 24px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                min-width: 100%;
+            }
+
+            .digit {
+                font-size: 56px;
+            }
+
+            .confidence-value {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Digit Predictor</h1>
+            <p class="subtitle">MNIST CNN Classifier</p>
+            <p class="creator">Made by Chance Page</p>
+        </header>
+
+        <div class="info-section">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+                <button class="toggle-info" onclick="toggleInfo()">About the Models</button>
+                <a href="/lesson" class="toggle-info" style="text-align: center; line-height: 1.5; text-decoration: none;">Learn How CNNs Work</a>
+            </div>
+            <div id="info-content" class="info-content">
+                <h2>Understanding the Three Models</h2>
+
+                <div class="model-info baseline-info">
+                    <h3>Baseline Model</h3>
+                    <p>Trained on 50,000 MNIST images for 10 epochs with standard preprocessing. This model represents a well-balanced CNN with proper regularization (dropout) and sufficient training data. It should generalize well to new handwritten digits.</p>
+                </div>
+
+                <div class="model-info augmented-info">
+                    <h3>Augmented Model</h3>
+                    <p>Trained with data augmentation techniques including random rotations (±10°), width/height shifts (±10%), and zoom variations (±10%). This creates more diverse training examples from the same dataset, helping the model handle variations in handwriting styles, angles, and positioning.</p>
+                </div>
+
+                <div class="model-info overfitted-info">
+                    <h3>Overfitted Model</h3>
+                    <p>Intentionally trained on only 1,000 images for 50 epochs to demonstrate overfitting. This model has memorized the limited training data rather than learning general patterns. It shows high training accuracy but poor generalization—watch how it may struggle with your handwriting compared to the other models.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="canvas-container">
+                <label class="canvas-label">Draw a digit (0-9)</label>
+                <canvas id="canvas" width="28" height="28"></canvas>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-clear" onclick="clearCanvas()">Clear Canvas</button>
+            </div>
+
+            <div id="status" class="status"></div>
+        </div>
+
+        <div id="predictions" class="predictions"></div>
+    </div>
+
+    <script>
+        // Toggle info section
+        function toggleInfo() {
+            const content = document.getElementById('info-content');
+            const button = document.querySelector('.toggle-info');
+            content.classList.toggle('show');
+            button.textContent = content.classList.contains('show') ? 'Hide Model Info' : 'About the Models';
+        }
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Setup canvas - black background, white drawing (MNIST style)
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            if (e.type.includes('touch')) {
+                const touch = e.touches[0] || e.changedTouches[0];
+                return {
+                    x: (touch.clientX - rect.left) * scaleX,
+                    y: (touch.clientY - rect.top) * scaleY
+                };
+            } else {
+                return {
+                    x: (e.clientX - rect.left) * scaleX,
+                    y: (e.clientY - rect.top) * scaleY
+                };
+            }
+        }
+
+        function startDrawing(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const coords = getCoordinates(e);
+            lastX = coords.x;
+            lastY = coords.y;
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+
+            const coords = getCoordinates(e);
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(coords.x, coords.y);
+            ctx.stroke();
+
+            lastX = coords.x;
+            lastY = coords.y;
+        }
+
+        function stopDrawing(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            isDrawing = false;
+            predict();
+        }
+
+        // Mouse events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Touch events
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+        canvas.addEventListener('touchcancel', stopDrawing);
+
+        function clearCanvas() {
+            // Save current canvas state
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            // Eraser animation parameters
+            const eraserWidth = 8;
+            const eraserHeight = 6;
+            let eraserX = -eraserWidth;
+            let eraserY = 0;
+            const speed = 1.5;
+            const rows = Math.ceil(canvas.height / eraserHeight);
+            let currentRow = 0;
+
+            // Restore initial image
+            ctx.putImageData(imageData, 0, 0);
+
+            function animateEraser() {
+                // Clear the current eraser path
+                if (currentRow % 2 === 0) {
+                    // Left to right
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(Math.max(0, eraserX - eraserWidth), eraserY, eraserWidth * 2, eraserHeight);
+                    eraserX += speed;
+
+                    if (eraserX > canvas.width + eraserWidth) {
+                        currentRow++;
+                        eraserY += eraserHeight;
+                        eraserX = canvas.width + eraserWidth;
+                    }
+                } else {
+                    // Right to left
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(Math.min(canvas.width - eraserWidth, eraserX - eraserWidth), eraserY, eraserWidth * 2, eraserHeight);
+                    eraserX -= speed;
+
+                    if (eraserX < -eraserWidth) {
+                        currentRow++;
+                        eraserY += eraserHeight;
+                        eraserX = -eraserWidth;
+                    }
+                }
+
+                // Continue animation or finish
+                if (currentRow < rows) {
+                    requestAnimationFrame(animateEraser);
+                } else {
+                    // Ensure canvas is completely black
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    document.getElementById('predictions').innerHTML = '';
+                    document.getElementById('status').classList.remove('show');
+                }
+            }
+
+            animateEraser();
+        }
+
+        async function predict() {
+            const status = document.getElementById('status');
+            status.textContent = 'Analyzing...';
+            status.className = 'status show analyzing analyzing-animation';
+
+            const imageData = canvas.toDataURL('image/png');
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ image: imageData })
+                });
+
+                const predictions = await response.json();
+
+                if (predictions.error) {
+                    status.textContent = 'Error: ' + predictions.error;
+                    status.className = 'status show';
+                    return;
+                }
+
+                status.classList.remove('show');
+                displayPredictions(predictions);
+
+            } catch (error) {
+                status.textContent = 'Error: ' + error.message;
+                status.className = 'status show';
+            }
+        }
+
+        function displayPredictions(predictions) {
+            const container = document.getElementById('predictions');
+            container.innerHTML = '';
+
+            const modelOrder = ['baseline', 'augmented', 'overfitted'];
+            const modelTitles = {
+                'baseline': 'Baseline Model',
+                'augmented': 'Augmented Model',
+                'overfitted': 'Overfitted Model'
+            };
+
+            modelOrder.forEach((modelName, index) => {
+                const pred = predictions[modelName];
+                if (!pred) return;
+
+                const resultDiv = document.createElement('div');
+                resultDiv.className = `model-result ${modelName}`;
+
+                // Create array of probabilities with their digit labels
+                const probArray = pred.probabilities.map((prob, digit) => ({
+                    digit: digit,
+                    prob: prob
+                }));
+
+                // Sort by probability (highest to lowest) and filter out anything < 0.05% (rounds to 0.0%)
+                const sortedProbs = probArray
+                    .filter(item => item.prob >= 0.05)
+                    .sort((a, b) => b.prob - a.prob);
+
+                const probBars = sortedProbs.map(item => `
+                    <div class="prob-item">
+                        <span class="prob-label">${item.digit}</span>
+                        <div class="prob-bar-container">
+                            <div class="prob-bar" data-width="${item.prob}"></div>
+                        </div>
+                        <span class="prob-value">${item.prob.toFixed(1)}%</span>
+                    </div>
+                `).join('');
+
+                resultDiv.innerHTML = `
+                    <div class="model-name">${modelTitles[modelName]}</div>
+                    <div class="prediction-main">
+                        <div class="digit">${pred.digit}</div>
+                        <div class="confidence">
+                            <div class="confidence-value">${pred.confidence.toFixed(1)}%</div>
+                            <div class="confidence-label">Confidence</div>
+                        </div>
+                    </div>
+                    <div class="probability-bars">
+                        ${probBars}
+                    </div>
+                `;
+
+                container.appendChild(resultDiv);
+
+                // Animate entry
+                setTimeout(() => {
+                    resultDiv.classList.add('show');
+
+                    // Animate bars
+                    setTimeout(() => {
+                        resultDiv.querySelectorAll('.prob-bar').forEach(bar => {
+                            bar.style.width = bar.dataset.width + '%';
+                        });
+                    }, 100);
+                }, index * 150);
+            });
+        }
+    </script>
+</body>
+</html>

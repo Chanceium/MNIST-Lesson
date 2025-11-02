@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNN Lesson - Understanding Neural Networks</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/theme/black.css">
+    <style>
+        :root {
+            --r-background-color: #1d1d1f;
+            --r-main-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            --r-heading-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            --r-main-color: #f5f5f7;
+            --r-heading-color: #ffffff;
+            --r-link-color: #0071e3;
+            --r-link-color-hover: #0077ed;
+        }
+
+        .reveal h1, .reveal h2, .reveal h3 {
+            letter-spacing: -1px;
+            font-weight: 700;
+        }
+
+        .reveal h1 {
+            font-size: 3.5em;
+        }
+
+        .reveal .slide-number {
+            background: rgba(0, 113, 227, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .color-blue { color: #007aff; }
+        .color-green { color: #34c759; }
+        .color-orange { color: #ff9500; }
+        .color-red { color: #ff3b30; }
+        .color-purple { color: #af52de; }
+
+        .reveal .fragment.highlight-current-blue.current-fragment {
+            color: #007aff;
+        }
+
+        .emoji-large {
+            font-size: 3em;
+            display: block;
+            margin: 20px 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .box.blue {
+            border-color: #007aff;
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        .box.green {
+            border-color: #34c759;
+            background: rgba(52, 199, 89, 0.1);
+        }
+
+        .box.orange {
+            border-color: #ff9500;
+            background: rgba(255, 149, 0, 0.1);
+        }
+
+        .small-text {
+            font-size: 0.8em;
+        }
+
+        .code-example {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #007aff;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #0071e3;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 980px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 17px;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            letter-spacing: -0.4px;
+        }
+
+        .back-button:hover {
+            background: #0077ed;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 113, 227, 0.4);
+        }
+
+        .fullscreen-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 980px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            letter-spacing: -0.2px;
+            cursor: pointer;
+        }
+
+        .fullscreen-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .fullscreen-button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .reveal .controls {
+            bottom: 40px;
+        }
+
+        .reveal .slide-number {
+            bottom: 12px;
+        }
+
+        ul {
+            text-align: left;
+        }
+
+        .reveal ul li {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-button">Back to App</a>
+    <button id="fullscreen-btn" class="fullscreen-button">Fullscreen</button>
+
+    <div class="reveal">
+        <div class="slides">
+            <!-- Slide 1: Title -->
+            <section>
+                <h1>Understanding CNNs</h1>
+                <h3>How Computers Learn to See</h3>
+                <p style="margin-top: 40px;">
+                    <span class="color-blue">A High School Guide to Neural Networks</span>
+                </p>
+            </section>
+
+            <!-- Slide 2: What is AI? -->
+            <section>
+                <h2>What is Artificial Intelligence?</h2>
+                <div class="grid-2">
+                    <div>
+                        <p class="emoji-large">🤖</p>
+                    </div>
+                    <div>
+                        <p>Teaching computers to <span class="color-blue">learn</span> from examples, just like how you learned to recognize objects when you were young.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3: The Problem -->
+            <section>
+                <h2>The Challenge</h2>
+                <p>How do you teach a computer to recognize handwritten numbers?</p>
+                <div style="margin-top: 40px;">
+                    <div class="box">
+                        <h3>🤔 The Traditional Way</h3>
+                        <p class="small-text">Write millions of rules:<br>"If the pixels look like this... then it's a 7"</p>
+                        <p class="color-red"><strong>Nearly impossible!</strong></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 4: The Solution -->
+            <section>
+                <h2>The Better Way: Machine Learning</h2>
+                <div class="box green">
+                    <h3>💡 Let the computer learn the patterns itself!</h3>
+                    <p>Show it <span class="color-green">thousands of examples</span> and let it figure out the rules.</p>
+                </div>
+            </section>
+
+            <!-- Slide 5: What is a Neural Network? -->
+            <section>
+                <h2>Neural Networks</h2>
+                <p>Inspired by your brain! 🧠</p>
+                <div class="grid-2">
+                    <div class="box blue">
+                        <h4>Your Brain</h4>
+                        <p class="small-text">Billions of neurons connected together, passing signals</p>
+                    </div>
+                    <div class="box orange">
+                        <h4>Artificial Neural Network</h4>
+                        <p class="small-text">Simulated neurons (math functions) connected together, passing numbers</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 6: CNN Introduction -->
+            <section>
+                <h2>Convolutional Neural Network (CNN)</h2>
+                <p>A special type of neural network designed for <span class="color-blue">images</span></p>
+                <div style="margin-top: 40px;">
+                    <p class="emoji-large">📸 → 🧠 → 🔢</p>
+                    <p class="small-text">Image → CNN → Prediction</p>
+                </div>
+            </section>
+
+            <!-- Slide 7: How CNNs Work - Part 1 -->
+            <section>
+                <h2>How CNNs Work: Step 1</h2>
+                <h3 class="color-blue">Input Layer</h3>
+                <p>The image is converted to numbers (pixels)</p>
+                <div class="box">
+                    <p>Each pixel has a value from 0 (black) to 255 (white)</p>
+                    <p class="small-text">MNIST images are 28×28 pixels = 784 numbers</p>
+                </div>
+            </section>
+
+            <!-- Slide 8: How CNNs Work - Part 2 -->
+            <section>
+                <h2>How CNNs Work: Step 2</h2>
+                <h3 class="color-green">Convolutional Layers</h3>
+                <p>The network looks for <strong>patterns</strong> in the image</p>
+                <ul>
+                    <li class="fragment">First layer: detects <strong>edges</strong> and <strong>lines</strong></li>
+                    <li class="fragment">Second layer: detects <strong>curves</strong> and <strong>shapes</strong></li>
+                    <li class="fragment">Deeper layers: detects <strong>complex patterns</strong></li>
+                </ul>
+            </section>
+
+            <!-- Slide 9: How CNNs Work - Part 3 -->
+            <section>
+                <h2>How CNNs Work: Step 3</h2>
+                <h3 class="color-orange">Pooling Layers</h3>
+                <p>Shrinks the image to focus on important features</p>
+                <div class="box orange">
+                    <p>Reduces computation while keeping the most important information</p>
+                </div>
+            </section>
+
+            <!-- Slide 10: How CNNs Work - Part 4 -->
+            <section>
+                <h2>How CNNs Work: Step 4</h2>
+                <h3 class="color-purple">Output Layer</h3>
+                <p>Makes the final decision</p>
+                <div class="box">
+                    <p>Outputs 10 numbers (one for each digit 0-9)</p>
+                    <p class="small-text">The highest number is the prediction!</p>
+                </div>
+            </section>
+
+            <!-- Slide 11: Training -->
+            <section>
+                <h2>Training the Network</h2>
+                <div style="text-align: left;">
+                    <p class="fragment"><strong>1.</strong> Show the network an image</p>
+                    <p class="fragment"><strong>2.</strong> Let it make a guess</p>
+                    <p class="fragment"><strong>3.</strong> Tell it if it's right or wrong</p>
+                    <p class="fragment"><strong>4.</strong> The network adjusts itself to do better next time</p>
+                    <p class="fragment"><strong>5.</strong> Repeat <span class="color-green">thousands of times</span>!</p>
+                </div>
+            </section>
+
+            <!-- Slide 12: The Three Models -->
+            <section>
+                <h2>Our Three Models</h2>
+                <p>In the app, you'll test three different trained models:</p>
+            </section>
+
+            <!-- Slide 13: Baseline Model -->
+            <section>
+                <h3 class="color-blue">Baseline Model</h3>
+                <div class="box blue">
+                    <p><strong>Training:</strong> 50,000 images for 10 epochs</p>
+                    <p><strong>What it teaches:</strong> This is a well-balanced model with proper training</p>
+                    <p><strong>Expected performance:</strong> Good generalization to new handwriting</p>
+                </div>
+            </section>
+
+            <!-- Slide 14: Augmented Model -->
+            <section>
+                <h3 class="color-green">Augmented Model</h3>
+                <div class="box green">
+                    <p><strong>Training:</strong> Same data + rotations, shifts, zoom variations</p>
+                    <p><strong>What it teaches:</strong> Data augmentation makes the model more robust</p>
+                    <p><strong>Expected performance:</strong> Better at handling different handwriting styles and angles</p>
+                </div>
+            </section>
+
+            <!-- Slide 15: Overfitted Model -->
+            <section>
+                <h3 class="color-orange">Overfitted Model</h3>
+                <div class="box orange">
+                    <p><strong>Training:</strong> Only 1,000 images for 50 epochs</p>
+                    <p><strong>What it teaches:</strong> Demonstrates overfitting—when a model memorizes instead of learns</p>
+                    <p><strong>Expected performance:</strong> Poor generalization, may struggle with your handwriting</p>
+                </div>
+            </section>
+
+            <!-- Slide 16: Overfitting Explained -->
+            <section>
+                <h2>What is Overfitting?</h2>
+                <div class="grid-2">
+                    <div class="box green">
+                        <h4>Good Learning</h4>
+                        <p class="small-text">Understanding the general pattern</p>
+                        <p class="emoji-large">✅</p>
+                    </div>
+                    <div class="box red">
+                        <h4>Overfitting</h4>
+                        <p class="small-text">Memorizing the specific examples without understanding</p>
+                        <p class="emoji-large">❌</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 17: Real World Analogy -->
+            <section>
+                <h2>Real World Analogy</h2>
+                <div class="box">
+                    <h3>Studying for a Test</h3>
+                    <p class="small-text">
+                        <span class="color-green"><strong>Good learning:</strong></span> Understanding the concepts so you can solve any problem<br><br>
+                        <span class="color-orange"><strong>Overfitting:</strong></span> Memorizing only the practice problems, failing when test questions are different
+                    </p>
+                </div>
+                <div class="box" style="margin-top: 30px;">
+                    <h3>Teaching a Child to Read</h3>
+                    <p class="small-text">
+                        <span class="color-green"><strong>Good learning:</strong></span> Reading 100 different books—learns to understand diverse stories and contexts<br><br>
+                        <span class="color-orange"><strong>Overfitting:</strong></span> Reading the same book 100 times—memorizes that one book but struggles with new stories
+                    </p>
+                </div>
+            </section>
+
+            <!-- Slide 18: Data Augmentation -->
+            <section>
+                <h2>Data Augmentation</h2>
+                <p>Creating variations of training data to make models more robust</p>
+                <ul>
+                    <li class="fragment">Rotation (±10°)</li>
+                    <li class="fragment">Shifting position (±10%)</li>
+                    <li class="fragment">Zooming in/out (±10%)</li>
+                </ul>
+                <p class="fragment" style="margin-top: 30px;">
+                    <span class="color-green">This helps the model learn to recognize digits in many different styles!</span>
+                </p>
+            </section>
+
+            <!-- Slide 19: Why This Matters -->
+            <section>
+                <h2>Why This Matters</h2>
+                <p>CNNs are used everywhere:</p>
+                <ul>
+                    <li class="fragment">📱 <strong>Face ID</strong> on your phone</li>
+                    <li class="fragment">🚗 <strong>Self-driving cars</strong> detecting objects</li>
+                    <li class="fragment">🏥 <strong>Medical imaging</strong> finding diseases</li>
+                    <li class="fragment">📷 <strong>Social media</strong> filters and effects</li>
+                    <li class="fragment">🔍 <strong>Google Lens</strong> identifying objects</li>
+                </ul>
+            </section>
+
+            <!-- Slide 20: Try It Yourself -->
+            <section>
+                <h2>Now It's Your Turn!</h2>
+                <p class="emoji-large">✍️</p>
+                <p>Go back to the app and test the three models with your own handwriting!</p>
+                <p style="margin-top: 40px;">
+                    <a href="/" style="color: #007aff; text-decoration: none; font-weight: 600; font-size: 1.2em;">→ Back to App</a>
+                </p>
+            </section>
+
+            <!-- Slide 21: Questions -->
+            <section>
+                <h2>Questions to Explore</h2>
+                <ul>
+                    <li>Which model performs best on your handwriting?</li>
+                    <li>Can you trick the overfitted model?</li>
+                    <li>Does the augmented model handle tilted digits better?</li>
+                    <li>What happens if you draw sloppy vs. neat?</li>
+                </ul>
+            </section>
+
+            <!-- Slide 22: Thank You -->
+            <section>
+                <h1>Thank You!</h1>
+                <p class="emoji-large">🎓</p>
+                <p>Now you understand the basics of CNNs!</p>
+                <p class="small-text" style="margin-top: 40px;">Created by Chance Page</p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'slide',
+            backgroundTransition: 'fade',
+            center: true,
+            controls: true,
+            progress: true,
+            keyboard: true,
+            overview: true,
+            touch: true,
+            loop: false,
+            rtl: false,
+            fragments: true,
+            embedded: false,
+            help: true,
+            showNotes: false,
+            autoPlayMedia: null,
+            preloadIframes: null,
+            autoAnimate: true,
+            autoAnimateDuration: 1,
+            autoAnimateEasing: 'ease',
+            autoAnimateUnmatched: true,
+            width: 1280,
+            height: 720,
+            margin: 0.04,
+        });
+
+        // Fullscreen functionality
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    fullscreenBtn.textContent = 'Exit Fullscreen';
+                }).catch((err) => {
+                    console.error('Error attempting to enable fullscreen:', err);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().then(() => {
+                        fullscreenBtn.textContent = 'Fullscreen';
+                    });
+                }
+            }
+        }
+
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        // Update button text if user exits fullscreen via ESC key
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                fullscreenBtn.textContent = 'Fullscreen';
+            }
+        });
+
+        // Keyboard shortcut: F for fullscreen
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'f' || e.key === 'F') {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>
