@@ -44,10 +44,21 @@
             color: #007aff;
         }
 
-        .emoji-large {
-            font-size: 3em;
-            display: block;
+        .icon-large {
+            display: inline-flex;
             margin: 20px 0;
+        }
+
+        .icon-large svg {
+            width: 120px;
+            height: 120px;
+        }
+
+        .icon-medium svg {
+            width: 60px;
+            height: 60px;
+            display: inline-block;
+            vertical-align: middle;
         }
 
         .grid-2 {
@@ -77,6 +88,11 @@
         .box.orange {
             border-color: #ff9500;
             background: rgba(255, 149, 0, 0.1);
+        }
+
+        .box.red {
+            border-color: #ff3b30;
+            background: rgba(255, 59, 48, 0.1);
         }
 
         .small-text {
@@ -181,7 +197,9 @@
                 <h2>What is Artificial Intelligence?</h2>
                 <div class="grid-2">
                     <div>
-                        <p class="emoji-large">🤖</p>
+                        <div class="icon-large">
+                            <i data-lucide="cpu" class="color-blue"></i>
+                        </div>
                     </div>
                     <div>
                         <p>Teaching computers to <span class="color-blue">learn</span> from examples, just like how you learned to recognize objects when you were young.</p>
@@ -195,7 +213,10 @@
                 <p>How do you teach a computer to recognize handwritten numbers?</p>
                 <div style="margin-top: 40px;">
                     <div class="box">
-                        <h3>🤔 The Traditional Way</h3>
+                        <div class="icon-medium">
+                            <i data-lucide="help-circle" class="color-orange"></i>
+                        </div>
+                        <h3>The Traditional Way</h3>
                         <p class="small-text">Write millions of rules:<br>"If the pixels look like this... then it's a 7"</p>
                         <p class="color-red"><strong>Nearly impossible!</strong></p>
                     </div>
@@ -206,7 +227,10 @@
             <section>
                 <h2>The Better Way: Machine Learning</h2>
                 <div class="box green">
-                    <h3>💡 Let the computer learn the patterns itself!</h3>
+                    <div class="icon-medium">
+                        <i data-lucide="lightbulb" class="color-green"></i>
+                    </div>
+                    <h3>Let the computer learn the patterns itself!</h3>
                     <p>Show it <span class="color-green">thousands of examples</span> and let it figure out the rules.</p>
                 </div>
             </section>
@@ -214,7 +238,9 @@
             <!-- Slide 5: What is a Neural Network? -->
             <section>
                 <h2>Neural Networks</h2>
-                <p>Inspired by your brain! 🧠</p>
+                <p>Inspired by your brain! 
+                    <span class="icon-medium"><i data-lucide="brain" class="color-purple"></i></span>
+                </p>
                 <div class="grid-2">
                     <div class="box blue">
                         <h4>Your Brain</h4>
@@ -232,7 +258,13 @@
                 <h2>Convolutional Neural Network (CNN)</h2>
                 <p>A special type of neural network designed for <span class="color-blue">images</span></p>
                 <div style="margin-top: 40px;">
-                    <p class="emoji-large">📸 → 🧠 → 🔢</p>
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 30px; font-size: 3em;">
+                        <i data-lucide="image" class="color-blue"></i>
+                        <span>→</span>
+                        <i data-lucide="brain" class="color-purple"></i>
+                        <span>→</span>
+                        <i data-lucide="hash" class="color-green"></i>
+                    </div>
                     <p class="small-text">Image → CNN → Prediction</p>
                 </div>
             </section>
@@ -240,7 +272,10 @@
             <!-- Slide 7: How CNNs Work - Part 1 -->
             <section>
                 <h2>How CNNs Work: Step 1</h2>
-                <h3 class="color-blue">Input Layer</h3>
+                <h3 class="color-blue">
+                    <span class="icon-medium"><i data-lucide="download" class="color-blue"></i></span>
+                    Input Layer
+                </h3>
                 <p>The image is converted to numbers (pixels)</p>
                 <div class="box">
                     <p>Each pixel has a value from 0 (black) to 255 (white)</p>
@@ -251,7 +286,10 @@
             <!-- Slide 8: How CNNs Work - Part 2 -->
             <section>
                 <h2>How CNNs Work: Step 2</h2>
-                <h3 class="color-green">Convolutional Layers</h3>
+                <h3 class="color-green">
+                    <span class="icon-medium"><i data-lucide="layers" class="color-green"></i></span>
+                    Convolutional Layers
+                </h3>
                 <p>The network looks for <strong>patterns</strong> in the image</p>
                 <ul>
                     <li class="fragment">First layer: detects <strong>edges</strong> and <strong>lines</strong></li>
@@ -263,7 +301,10 @@
             <!-- Slide 9: How CNNs Work - Part 3 -->
             <section>
                 <h2>How CNNs Work: Step 3</h2>
-                <h3 class="color-orange">Pooling Layers</h3>
+                <h3 class="color-orange">
+                    <span class="icon-medium"><i data-lucide="minimize-2" class="color-orange"></i></span>
+                    Pooling Layers
+                </h3>
                 <p>Shrinks the image to focus on important features</p>
                 <div class="box orange">
                     <p>Reduces computation while keeping the most important information</p>
@@ -273,7 +314,10 @@
             <!-- Slide 10: How CNNs Work - Part 4 -->
             <section>
                 <h2>How CNNs Work: Step 4</h2>
-                <h3 class="color-purple">Output Layer</h3>
+                <h3 class="color-purple">
+                    <span class="icon-medium"><i data-lucide="target" class="color-purple"></i></span>
+                    Output Layer
+                </h3>
                 <p>Makes the final decision</p>
                 <div class="box">
                     <p>Outputs 10 numbers (one for each digit 0-9)</p>
@@ -283,7 +327,10 @@
 
             <!-- Slide 11: Training -->
             <section>
-                <h2>Training the Network</h2>
+                <h2>
+                    <span class="icon-medium"><i data-lucide="repeat" class="color-blue"></i></span>
+                    Training the Network
+                </h2>
                 <div style="text-align: left;">
                     <p class="fragment"><strong>1.</strong> Show the network an image</p>
                     <p class="fragment"><strong>2.</strong> Let it make a guess</p>
@@ -301,7 +348,10 @@
 
             <!-- Slide 13: Baseline Model -->
             <section>
-                <h3 class="color-blue">Baseline Model</h3>
+                <h3 class="color-blue">
+                    <span class="icon-medium"><i data-lucide="activity" class="color-blue"></i></span>
+                    Baseline Model
+                </h3>
                 <div class="box blue">
                     <p><strong>Training:</strong> 50,000 images for 10 epochs</p>
                     <p><strong>What it teaches:</strong> This is a well-balanced model with proper training</p>
@@ -311,7 +361,10 @@
 
             <!-- Slide 14: Augmented Model -->
             <section>
-                <h3 class="color-green">Augmented Model</h3>
+                <h3 class="color-green">
+                    <span class="icon-medium"><i data-lucide="zap" class="color-green"></i></span>
+                    Augmented Model
+                </h3>
                 <div class="box green">
                     <p><strong>Training:</strong> Same data + rotations, shifts, zoom variations</p>
                     <p><strong>What it teaches:</strong> Data augmentation makes the model more robust</p>
@@ -321,7 +374,10 @@
 
             <!-- Slide 15: Overfitted Model -->
             <section>
-                <h3 class="color-orange">Overfitted Model</h3>
+                <h3 class="color-orange">
+                    <span class="icon-medium"><i data-lucide="alert-triangle" class="color-orange"></i></span>
+                    Overfitted Model
+                </h3>
                 <div class="box orange">
                     <p><strong>Training:</strong> Only 1,000 images for 50 epochs</p>
                     <p><strong>What it teaches:</strong> Demonstrates overfitting—when a model memorizes instead of learns</p>
@@ -334,14 +390,18 @@
                 <h2>What is Overfitting?</h2>
                 <div class="grid-2">
                     <div class="box green">
-                        <h4>Good Learning</h4>
+                        <h4>
+                            <span class="icon-medium"><i data-lucide="check-circle" class="color-green"></i></span>
+                            Good Learning
+                        </h4>
                         <p class="small-text">Understanding the general pattern</p>
-                        <p class="emoji-large">✅</p>
                     </div>
                     <div class="box red">
-                        <h4>Overfitting</h4>
+                        <h4>
+                            <span class="icon-medium"><i data-lucide="x-circle" class="color-red"></i></span>
+                            Overfitting
+                        </h4>
                         <p class="small-text">Memorizing the specific examples without understanding</p>
-                        <p class="emoji-large">❌</p>
                     </div>
                 </div>
             </section>
@@ -350,14 +410,20 @@
             <section>
                 <h2>Real World Analogy</h2>
                 <div class="box">
-                    <h3>Studying for a Test</h3>
+                    <h3>
+                        <span class="icon-medium"><i data-lucide="book-open" class="color-blue"></i></span>
+                        Studying for a Test
+                    </h3>
                     <p class="small-text">
                         <span class="color-green"><strong>Good learning:</strong></span> Understanding the concepts so you can solve any problem<br><br>
                         <span class="color-orange"><strong>Overfitting:</strong></span> Memorizing only the practice problems, failing when test questions are different
                     </p>
                 </div>
                 <div class="box" style="margin-top: 30px;">
-                    <h3>Teaching a Child to Read</h3>
+                    <h3>
+                        <span class="icon-medium"><i data-lucide="book" class="color-purple"></i></span>
+                        Teaching a Child to Read
+                    </h3>
                     <p class="small-text">
                         <span class="color-green"><strong>Good learning:</strong></span> Reading 100 different books—learns to understand diverse stories and contexts<br><br>
                         <span class="color-orange"><strong>Overfitting:</strong></span> Reading the same book 100 times—memorizes that one book but struggles with new stories
@@ -367,12 +433,24 @@
 
             <!-- Slide 18: Data Augmentation -->
             <section>
-                <h2>Data Augmentation</h2>
+                <h2>
+                    <span class="icon-medium"><i data-lucide="shuffle" class="color-green"></i></span>
+                    Data Augmentation
+                </h2>
                 <p>Creating variations of training data to make models more robust</p>
                 <ul>
-                    <li class="fragment">Rotation (±10°)</li>
-                    <li class="fragment">Shifting position (±10%)</li>
-                    <li class="fragment">Zooming in/out (±10%)</li>
+                    <li class="fragment">
+                        <i data-lucide="rotate-cw" style="width: 24px; height: 24px; vertical-align: middle;"></i>
+                        Rotation (±10°)
+                    </li>
+                    <li class="fragment">
+                        <i data-lucide="move" style="width: 24px; height: 24px; vertical-align: middle;"></i>
+                        Shifting position (±10%)
+                    </li>
+                    <li class="fragment">
+                        <i data-lucide="zoom-in" style="width: 24px; height: 24px; vertical-align: middle;"></i>
+                        Zooming in/out (±10%)
+                    </li>
                 </ul>
                 <p class="fragment" style="margin-top: 30px;">
                     <span class="color-green">This helps the model learn to recognize digits in many different styles!</span>
@@ -384,18 +462,35 @@
                 <h2>Why This Matters</h2>
                 <p>CNNs are used everywhere:</p>
                 <ul>
-                    <li class="fragment">📱 <strong>Face ID</strong> on your phone</li>
-                    <li class="fragment">🚗 <strong>Self-driving cars</strong> detecting objects</li>
-                    <li class="fragment">🏥 <strong>Medical imaging</strong> finding diseases</li>
-                    <li class="fragment">📷 <strong>Social media</strong> filters and effects</li>
-                    <li class="fragment">🔍 <strong>Google Lens</strong> identifying objects</li>
+                    <li class="fragment">
+                        <i data-lucide="smartphone" style="width: 24px; height: 24px; vertical-align: middle;"></i>
+                        <strong>Face ID</strong> on your phone
+                    </li>
+                    <li class="fragment">
+                        <i data-lucide="car" style="width: 24px; height: 24px; vertical-align: middle;"></i>
+                        <strong>Self-driving cars</strong> detecting objects
+                    </li>
+                    <li class="fragment">
+                        <i data-lucide="heart-pulse" style="width: 24px; height: 24px; vertical-align: middle;"></i>
+                        <strong>Medical imaging</strong> finding diseases
+                    </li>
+                    <li class="fragment">
+                        <i data-lucide="camera" style="width: 24px; height: 24px; vertical-align: middle;"></i>
+                        <strong>Social media</strong> filters and effects
+                    </li>
+                    <li class="fragment">
+                        <i data-lucide="search" style="width: 24px; height: 24px; vertical-align: middle;"></i>
+                        <strong>Google Lens</strong> identifying objects
+                    </li>
                 </ul>
             </section>
 
             <!-- Slide 20: Try It Yourself -->
             <section>
                 <h2>Now It's Your Turn!</h2>
-                <p class="emoji-large">✍️</p>
+                <div class="icon-large">
+                    <i data-lucide="pencil" class="color-blue"></i>
+                </div>
                 <p>Go back to the app and test the three models with your own handwriting!</p>
                 <p style="margin-top: 40px;">
                     <a href="/" style="color: #007aff; text-decoration: none; font-weight: 600; font-size: 1.2em;">→ Back to App</a>
@@ -404,7 +499,10 @@
 
             <!-- Slide 21: Questions -->
             <section>
-                <h2>Questions to Explore</h2>
+                <h2>
+                    <span class="icon-medium"><i data-lucide="message-circle-question" class="color-blue"></i></span>
+                    Questions to Explore
+                </h2>
                 <ul>
                     <li>Which model performs best on your handwriting?</li>
                     <li>Can you trick the overfitted model?</li>
@@ -416,7 +514,9 @@
             <!-- Slide 22: Thank You -->
             <section>
                 <h1>Thank You!</h1>
-                <p class="emoji-large">🎓</p>
+                <div class="icon-large">
+                    <i data-lucide="graduation-cap" class="color-green"></i>
+                </div>
                 <p>Now you understand the basics of CNNs!</p>
                 <p class="small-text" style="margin-top: 40px;">Created by Chance Page</p>
             </section>
@@ -424,6 +524,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.0.4/dist/reveal.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         Reveal.initialize({
             hash: true,
@@ -451,6 +552,18 @@
             width: 1280,
             height: 720,
             margin: 0.04,
+        });
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Re-initialize icons on slide change (for fragments)
+        Reveal.on('slidechanged', () => {
+            lucide.createIcons();
+        });
+
+        Reveal.on('fragmentshown', () => {
+            lucide.createIcons();
         });
 
         // Fullscreen functionality
