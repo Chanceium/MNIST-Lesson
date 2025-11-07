@@ -226,17 +226,12 @@
             <!-- Slide 4: The Solution -->
             <section>
                 <h2>The Better Way: Machine Learning</h2>
-                <div class="grid-2">
-                    <div class="box green">
-                        <div class="icon-medium">
-                            <i data-lucide="lightbulb" class="color-green"></i>
-                        </div>
-                        <h3>Let the computer learn the patterns itself!</h3>
-                        <p>Show it <span class="color-green">thousands of examples</span> and let it figure out the rules.</p>
+                <div class="box green">
+                    <div class="icon-medium">
+                        <i data-lucide="lightbulb" class="color-green"></i>
                     </div>
-                    <div class="box" style="visibility: hidden;">
-                        <!-- Hidden box for symmetry -->
-                    </div>
+                    <h3>Let the computer learn the patterns itself!</h3>
+                    <p>Show it <span class="color-green">thousands of examples</span> and let it figure out the rules.</p>
                 </div>
             </section>
 
@@ -244,7 +239,7 @@
             <section>
                 <h2>Neural Networks</h2>
                 <p>Inspired by your brain! 
-                    <span class="icon-large"><i data-lucide="brain" class="color-purple"></i></span>
+                    <span class="icon-medium"><i data-lucide="brain" class="color-purple"></i></span>
                 </p>
                 <div class="grid-2">
                     <div class="box blue">
@@ -263,7 +258,7 @@
                 <h2>Convolutional Neural Network (CNN)</h2>
                 <p>A special type of neural network designed for <span class="color-blue">images</span></p>
                 <div style="margin-top: 40px;">
-                    <div style="display: flex; justify-content: center; align-items: center; gap: 30px; font-size: 3em;">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 30px; font-size: 5em;">
                         <i data-lucide="image" class="color-blue"></i>
                         <span>→</span>
                         <i data-lucide="brain" class="color-purple"></i>
@@ -282,9 +277,14 @@
                     Input Layer
                 </h3>
                 <p>The image is converted to numbers (pixels)</p>
-                <div class="box">
-                    <p>Each pixel has a value from 0 (black) to 255 (white)</p>
-                    <p class="small-text">MNIST images are 28×28 pixels = 784 numbers</p>
+                <div class="grid-2">
+                    <div class="box">
+                        <p>Each pixel has a value from 0 (black) to 255 (white)</p>
+                        <p class="small-text">MNIST images are 28×28 pixels = 784 numbers</p>
+                    </div>
+                    <div class="box" style="visibility: hidden;">
+                        <!-- Hidden box for symmetry -->
+                    </div>
                 </div>
             </section>
 
@@ -383,15 +383,10 @@
                     <span class="icon-medium"><i data-lucide="alert-triangle" class="color-orange"></i></span>
                     Overfitted Model
                 </h3>
-                <div class="grid-2">
-                    <div class="box orange">
-                        <p><strong>Training:</strong> Only 1,000 images for 50 epochs</p>
-                        <p><strong>What it teaches:</strong> Demonstrates overfitting—when a model memorizes instead of learns</p>
-                        <p><strong>Expected performance:</strong> Poor generalization, may struggle with your handwriting</p>
-                    </div>
-                    <div class="box" style="visibility: hidden;">
-                        <!-- Hidden box for symmetry -->
-                    </div>
+                <div class="box orange">
+                    <p><strong>Training:</strong> Only 1,000 images for 50 epochs</p>
+                    <p><strong>What it teaches:</strong> Demonstrates overfitting—when a model memorizes instead of learns</p>
+                    <p><strong>Expected performance:</strong> Poor generalization, may struggle with your handwriting</p>
                 </div>
             </section>
 
