@@ -64,3 +64,12 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Trigger deployment webhook
+        if: ${{ success() }}
+        env:
+          DEPLOY_WEBHOOK: ${{ secrets.DeployWebhook }}
+        run: |
+          curl -v -X POST \
+            -H "X-API-Key: $DEPLOY_WEBHOOK" \
+            https://porthook.chancepage.ca/api/webhook/stacks/73
