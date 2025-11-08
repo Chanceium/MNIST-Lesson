@@ -131,10 +131,10 @@
             box-shadow: 0 4px 16px rgba(0, 113, 227, 0.4);
         }
 
-        .fullscreen-button {
+        .fullscreen-button,
+        .presentation-mode-button {
             position: fixed;
             top: 20px;
-            left: 20px;
             background: rgba(255, 255, 255, 0.1);
             color: white;
             padding: 12px 24px;
@@ -150,14 +150,29 @@
             cursor: pointer;
         }
 
-        .fullscreen-button:hover {
+        .fullscreen-button {
+            left: 20px;
+        }
+
+        .presentation-mode-button {
+            left: 180px;
+        }
+
+        .fullscreen-button:hover,
+        .presentation-mode-button:hover {
             background: rgba(255, 255, 255, 0.2);
             border-color: rgba(255, 255, 255, 0.5);
             transform: translateY(-2px);
         }
 
-        .fullscreen-button:active {
+        .fullscreen-button:active,
+        .presentation-mode-button:active {
             transform: translateY(0) scale(0.98);
+        }
+
+        .presentation-mode-button.active {
+            background: rgba(0, 113, 227, 0.8);
+            border-color: #0071e3;
         }
 
         .reveal .controls {
@@ -180,6 +195,7 @@
 <body>
     <a href="/" class="back-button">Back to App</a>
     <button id="fullscreen-btn" class="fullscreen-button">Fullscreen</button>
+    <button id="presentation-mode-btn" class="presentation-mode-button">Presentation Mode</button>
 
     <div class="reveal">
         <div class="slides">
@@ -647,7 +663,9 @@
             center: true,
             controls: true,
             progress: true,
-            keyboard: true,
+            keyboard: {
+                80: null, // Disable 'P' for previous slide
+            },
             overview: true,
             touch: true,
             loop: false,
@@ -712,6 +730,48 @@
             if (e.key === 'f' || e.key === 'F') {
                 e.preventDefault();
                 toggleFullscreen();
+            }
+        });
+
+        // Presentation Mode functionality
+        const presentationModeBtn = document.getElementById('presentation-mode-btn');
+        let presentationModeActive = false;
+
+        function togglePresentationMode() {
+            presentationModeActive = !presentationModeActive;
+
+            if (presentationModeActive) {
+                presentationModeBtn.classList.add('active');
+                presentationModeBtn.textContent = 'Exit Presentation Mode';
+            } else {
+                presentationModeBtn.classList.remove('active');
+                presentationModeBtn.textContent = 'Presentation Mode';
+            }
+        }
+
+        presentationModeBtn.addEventListener('click', togglePresentationMode);
+
+        // Click anywhere to advance in presentation mode
+        document.addEventListener('click', (e) => {
+            if (!presentationModeActive) return;
+
+            // Don't advance if clicking on buttons or links
+            if (e.target.tagName === 'BUTTON' ||
+                e.target.tagName === 'A' ||
+                e.target.closest('button') ||
+                e.target.closest('a')) {
+                return;
+            }
+
+            // Advance to next slide/fragment
+            Reveal.next();
+        });
+
+        // Keyboard shortcut: P for presentation mode
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'p' || e.key === 'P') {
+                e.preventDefault();
+                togglePresentationMode();
             }
         });
     </script>
