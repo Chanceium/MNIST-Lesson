@@ -64,7 +64,7 @@ jobs:
       - name: Trigger deployment webhook
         if: ${{ success() }}
         env:
-          DEPLOY_WEBHOOK: ${{ secrets.DeployWebhook }}
+          DEPLOY_WEBHOOK: ${{ secrets.DEPLOY_WEBHOOK }}
         run: |
           curl -v -X POST \
             -H "X-API-Key: $DEPLOY_WEBHOOK" \
