@@ -277,10 +277,11 @@
                     Input Layer
                 </h3>
                 <p>The image is converted to numbers (pixels)</p>
-                <div class="grid-2">
+                <div class="grid-1">
                     <div class="box">
                         <p>Each pixel has a value from 0 (black) to 255 (white)</p>
                         <p class="small-text">MNIST images are 28×28 pixels = 784 numbers</p>
+                        <p class="small-text">Problems that require colour information need even more data to represent all the RGB values</p>
                     </div>
                     <div class="box" style="visibility: hidden;">
                         <!-- Hidden box for symmetry -->
@@ -462,7 +463,114 @@
                 </p>
             </section>
 
-            <!-- Slide 19: Why This Matters -->
+            <!-- Slide 19: AI Explainability -->
+            <section>
+                <h2>
+                    <span class="icon-medium"><i data-lucide="eye" class="color-purple"></i></span>
+                    AI Explainability
+                </h2>
+                <p>Understanding <strong>why</strong> AI makes decisions</p>
+                <div class="box purple" style="margin-top: 30px; border-color: #af52de; background: rgba(175, 82, 222, 0.1);">
+                    <p>Neural networks are often called <span class="color-purple">"black boxes"</span></p>
+                    <p class="small-text">We know what goes in and what comes out, but not always <strong>why</strong></p>
+                </div>
+            </section>
+
+            <!-- Slide 20: Why Explainability Matters -->
+            <section>
+                <h2>Why Does Explainability Matter?</h2>
+                <ul>
+                    <li class="fragment">
+                        <i data-lucide="heart-pulse" style="width: 24px; height: 24px; vertical-align: middle;" class="color-red"></i>
+                        <strong>Healthcare:</strong> Doctors need to know why AI diagnosed a disease
+                    </li>
+                    <li class="fragment">
+                        <i data-lucide="shield-check" style="width: 24px; height: 24px; vertical-align: middle;" class="color-blue"></i>
+                        <strong>Trust:</strong> We need to verify AI isn't using the wrong features
+                    </li>
+                    <li class="fragment">
+                        <i data-lucide="scale" style="width: 24px; height: 24px; vertical-align: middle;" class="color-orange"></i>
+                        <strong>Fairness:</strong> Ensure AI isn't biased or discriminatory
+                    </li>
+                    <li class="fragment">
+                        <i data-lucide="bug" style="width: 24px; height: 24px; vertical-align: middle;" class="color-green"></i>
+                        <strong>Debugging:</strong> Find and fix errors in the model
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 21: Grad-CAM Introduction -->
+            <section>
+                <h2>
+                    <span class="icon-medium"><i data-lucide="flame" class="color-orange"></i></span>
+                    Grad-CAM
+                </h2>
+                <h3>Gradient-weighted Class Activation Mapping</h3>
+                <div class="box orange">
+                    <p>A technique that shows <strong>which parts of an image</strong> the CNN focused on when making its prediction</p>
+                </div>
+                <p class="fragment" style="margin-top: 30px;">
+                    <span class="color-blue">Think of it as highlighting what the AI is "looking at"</span>
+                </p>
+            </section>
+
+            <!-- Slide 22: How Grad-CAM Works -->
+            <section>
+                <h2>How Grad-CAM Works</h2>
+                <div style="text-align: left;">
+                    <p class="fragment"><strong>1.</strong> The CNN makes a prediction</p>
+                    <p class="fragment"><strong>2.</strong> We trace back through the network to see which pixels contributed most</p>
+                    <p class="fragment"><strong>3.</strong> Create a <span class="color-orange">heatmap</span> showing importance</p>
+                    <p class="fragment"><strong>4.</strong> Overlay the heatmap on the original image</p>
+                </div>
+                <div class="box blue fragment" style="margin-top: 30px;">
+                    <p class="small-text">
+                        <span class="color-blue">Blue/Cyan</span> = Low importance<br>
+                        <span class="color-green">Green/Yellow</span> = Medium importance<br>
+                        <span class="color-red">Red</span> = High importance
+                    </p>
+                </div>
+            </section>
+
+            <!-- Slide 23: Grad-CAM in Action -->
+            <section>
+                <h2>Grad-CAM in the App</h2>
+                <p>When you draw a digit, you'll see:</p>
+                <div class="grid-2">
+                    <div class="box blue">
+                        <h4>Your Drawing</h4>
+                        <p class="small-text">The digit you drew on the canvas</p>
+                    </div>
+                    <div class="box orange">
+                        <h4>Model Attention</h4>
+                        <p class="small-text">Heatmap showing where the model focused</p>
+                    </div>
+                </div>
+                <p class="fragment" style="margin-top: 30px;">
+                    <span class="color-green">Compare how different models "look at" the same digit!</span>
+                </p>
+            </section>
+
+            <!-- Slide 24: What You Can Learn -->
+            <section>
+                <h2>What Grad-CAM Reveals</h2>
+                <ul>
+                    <li class="fragment">
+                        <strong>Good models</strong> focus on the <span class="color-green">actual digit strokes</span>
+                    </li>
+                    <li class="fragment">
+                        <strong>Overfitted models</strong> might focus on <span class="color-red">irrelevant background pixels</span>
+                    </li>
+                    <li class="fragment">
+                        <strong>Compare models</strong> to see how data augmentation changes attention
+                    </li>
+                    <li class="fragment">
+                        <strong>Build trust</strong> by verifying the model is "looking" at the right things
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Slide 25: Why This Matters -->
             <section>
                 <h2>Why This Matters</h2>
                 <p>CNNs are used everywhere:</p>
