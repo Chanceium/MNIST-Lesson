@@ -68,4 +68,4 @@ jobs:
         run: |
           curl -v -X POST \
             -H "X-API-Key: $DEPLOY_WEBHOOK" \
-            https://porthook.chancepage.ca/api/webhook/stacks/73
+            https://porthook.chancepage.ca/api/webhook/stacks/name/mnist-lesson
